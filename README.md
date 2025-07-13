@@ -198,23 +198,26 @@ Health check endpoint.
 
 ```
 whisper_pyannote_api_ui/
-├── app.py                 # Main FastAPI application
-├── auth.py               # Authentication and OAuth logic
-├── models.py             # SQLAlchemy database models
-├── database.py           # Database utilities and queries
-├── requirements.txt      # Python dependencies
-├── Dockerfile           # Docker configuration
-├── docker-compose.yml   # Docker Compose setup
-├── setup.sh             # Automated setup script
-├── create_sample_audio.py # Script to generate test audio
-├── test_api.py          # API testing script
-├── sample.wav           # Sample audio file (generated)
+├── app.py                     # Main FastAPI application
+├── auth.py                    # Authentication and OAuth logic
+├── models.py                  # SQLAlchemy database models
+├── database.py                # Database utilities and queries
+├── requirements.txt           # Python dependencies
+├── Dockerfile                 # Docker configuration
+├── docker-compose.yml         # Docker Compose setup
+├── setup.sh                   # Automated setup script
+├── create_sample_audio.py     # Script to generate test audio
+├── test_api.py                # API testing script
+├── sample.wav                 # Sample audio file (generated)
 ├── templates/
-│   ├── index.html       # Main upload interface
-│   ├── login.html       # Login page with OAuth
-│   └── admin.html       # Admin dashboard
-├── output/              # User file storage (created automatically)
-└── README.md           # This file
+│   ├── index.html             # Main upload interface
+│   ├── login.html             # Login page with OAuth
+│   └── admin.html             # Admin dashboard
+|── tests/
+│   ├── test_api.py            # Main upload interface
+│   └── test_auth_api.py       # Admin dashboard
+├── output/                    # User file storage (created automatically)
+└── README.md                  # This file
 ```
 
 ## 🧪 Testing
