@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  whisper-diarization-app:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - HF_TOKEN=${HF_TOKEN:-}
+      - VALID_USERNAME=${VALID_USERNAME:-admin}
+      - VALID_PASSWORD=${VALID_PASSWORD:-password123}
+    volumes:
+      - ./sample.wav:/app/sample.wav:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s 
