@@ -18,44 +18,70 @@ A fully-featured microservice for audio transcription and speaker diarization us
 
 ## 🚀 Quick Start
 
-### Using Docker (Recommended)
+### 🐳 Using Docker (Recommended)
+
+Choose one of the options below depending on your hardware.
+
+---
+
+#### 🔧 Option 1: CPU-only (Local Testing or Development)
 
 1. **Build the Docker image:**
-   ```bash
-   docker build -t whisper-diarization-app .
-   ```
 
-2. **Run the container:**
-   ```bash
-   docker run -p 8000:8000 whisper-diarization-app
-   ```
+```bash
+docker-compose -f docker-compose.cpu.yml build
+```
 
-3. **Access the web interface:**
-   ```
-   http://localhost:8000
-   ```
+2. **Run the container**:
+
+### Local Development
+
+```bash
+docker-compose -f docker-compose.cpu.yml up
+```
+
+3. **Access the web interface**: `http://localhost:8000`
+
+#### 🚀 Option 2: GPU-Accelerated (Faster Inference)
+
+Requires [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html)
+
+1. Build the Docker image:
+```bash
+docker-compose -f docker-compose.gpu.yml build
+```
+
+2. **Run the container**:
+
+### Local Development
+```bash
+docker-compose -f docker-compose.cpu.yml up
+```
+
+3. **Access the web interface**: `http://localhost:8000`
 
 ### Local Development
 
 1. **Install dependencies:**
-   ```bash
-   pip install -r requirements.txt
-   ```
+```bash
+pip install -r requirements.txt
+```
 
 2. **Set up HuggingFace token (for diarization):**
-   ```bash
-   export HF_TOKEN="your_huggingface_token_here"
-   ```
+```bash
+export HF_TOKEN="your_huggingface_token_here"
+```
 
 3. **Run the application:**
-   ```bash
-   python run.py
-   ```
-   
-   Or using uvicorn directly:
-   ```bash
-   uvicorn app.main:app --reload
-   ```
+
+```bash
+python run.py
+```
+
+Or using uvicorn directly:
+```bash
+uvicorn app.main:app --reload
+```
 
 ## 🔧 Setup Requirements
 
@@ -88,6 +114,7 @@ A fully-featured microservice for audio transcription and speaker diarization us
 Process an audio file with transcription and diarization.
 
 **Headers:**
+
 ```
 Authorization: Basic <base64_encoded_credentials>
 ```
@@ -98,6 +125,7 @@ Authorization: Basic <base64_encoded_credentials>
 - `webhook_url`: Optional webhook URL
 
 **Response:**
+
 ```json
 {
   "status": "success",

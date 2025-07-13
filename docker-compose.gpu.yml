@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  whisper-diarization-app:
+    container_name: whisper-gpu
+    build:
+      context: .
+      dockerfile: Dockerfile.GPU
+    runtime: nvidia
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      HF_TOKEN: ${HF_TOKEN}
+      SECRET_KEY: ${SECRET_KEY}
+      DATABASE_URL: ${DATABASE_URL}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      GITHUB_CLIENT_ID: ${GITHUB_CLIENT_ID}
+      GITHUB_CLIENT_SECRET: ${GITHUB_CLIENT_SECRET}
+      RUN_MODE: gpu
+    volumes:
+      - ./sample.wav:/app/sample.wav:ro
+      - ./output:/app/output
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              capabilities: [gpu]

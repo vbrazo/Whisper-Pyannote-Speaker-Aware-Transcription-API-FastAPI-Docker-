@@ -4,7 +4,8 @@ FROM nvidia/cuda:12.1.1-cudnn8-runtime-ubuntu22.04
 
 # Install Python and system dependencies
 RUN apt-get update && apt-get install -y \
-    python3.10 python3.10-venv python3-pip ffmpeg libsndfile1 git curl \
+    python3.10 python3.10-venv python3-pip \
+    ffmpeg libsndfile1 git curl \
     && rm -rf /var/lib/apt/lists/*
 
 # Set python3.10 as default
@@ -14,18 +15,27 @@ RUN ln -sf /usr/bin/python3.10 /usr/bin/python && \
 WORKDIR /app
 
 COPY requirements.txt .
+
+# Install Python packages from requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-# After pip install -r requirements.txt in Dockerfile.gpu
+# Install PyTorch with GPU (CUDA 12.1)
 RUN pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
 
 COPY . .
 
-# Expose port
+# Create necessary folders for templates, static files, and output
+RUN mkdir -p app/templates app/static output
+
+# Add health check endpoint
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:8000/health || exit 1
+
+# Expose FastAPI port
 EXPOSE 8000
 
-# Environment variable for GPU mode
+# Environment flag to indicate GPU mode
 ENV RUN_MODE=gpu
 
-# Run the app
+# Run the FastAPI app with Uvicorn
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

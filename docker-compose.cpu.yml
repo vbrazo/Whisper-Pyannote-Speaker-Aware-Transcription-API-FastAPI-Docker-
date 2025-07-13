@@ -2,7 +2,10 @@ version: '3.8'
 
 services:
   whisper-diarization-app:
-    build: .
+    container_name: whisper-cpu
+    build:
+      context: .
+      dockerfile: Dockerfile.CPU
     ports:
       - "8000:8000"
     env_file:
@@ -25,9 +28,3 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              capabilities: [gpu]
