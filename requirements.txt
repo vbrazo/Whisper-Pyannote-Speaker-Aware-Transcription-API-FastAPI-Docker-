@@ -24,8 +24,7 @@ python-multipart==0.0.6
 
 # Database
 sqlalchemy==2.0.23
-alembic==1.12.1
-sqlite3
+alembic>=1.12.1
 
 # Configuration & Validation
 python-dotenv==1.0.0
