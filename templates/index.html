@@ -224,6 +224,22 @@
             <p>Upload audio files for transcription and speaker diarization</p>
         </div>
 
+        <!-- User Info -->
+        <div class="user-info" style="background: #f8f9ff; padding: 15px; border-radius: 10px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <strong>👤 Welcome, {{ current_user.email }}</strong>
+                {% if current_user.is_admin %}
+                    <span style="background: #667eea; color: white; padding: 2px 8px; border-radius: 10px; font-size: 0.8rem; margin-left: 10px;">Admin</span>
+                {% endif %}
+            </div>
+            <div style="display: flex; gap: 10px;">
+                {% if current_user.is_admin %}
+                    <a href="/admin" class="btn btn-secondary" style="padding: 8px 16px; font-size: 0.9rem;">📊 Admin Dashboard</a>
+                {% endif %}
+                <a href="/logout" class="btn btn-secondary" style="padding: 8px 16px; font-size: 0.9rem;">🚪 Logout</a>
+            </div>
+        </div>
+
         <form id="uploadForm">
             <div class="form-group">
                 <label for="file">Audio File</label>
@@ -341,10 +357,7 @@
             try {
                 const response = await fetch('/process', {
                     method: 'POST',
-                    body: formData,
-                    headers: {
-                        'Authorization': 'Basic ' + btoa('admin:password123')
-                    }
+                    body: formData
                 });
 
                 const data = await response.json();

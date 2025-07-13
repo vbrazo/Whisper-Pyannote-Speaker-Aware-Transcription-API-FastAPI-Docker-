@@ -7,8 +7,12 @@ services:
       - "8000:8000"
     environment:
       - HF_TOKEN=${HF_TOKEN:-}
-      - VALID_USERNAME=${VALID_USERNAME:-admin}
-      - VALID_PASSWORD=${VALID_PASSWORD:-password123}
+      - SECRET_KEY=${SECRET_KEY:-your-secret-key-change-in-production}
+      - DATABASE_URL=${DATABASE_URL:-sqlite:///./whisper_api.db}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID:-}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET:-}
+      - GITHUB_CLIENT_ID=${GITHUB_CLIENT_ID:-}
+      - GITHUB_CLIENT_SECRET=${GITHUB_CLIENT_SECRET:-}
     volumes:
       - ./sample.wav:/app/sample.wav:ro
     restart: unless-stopped

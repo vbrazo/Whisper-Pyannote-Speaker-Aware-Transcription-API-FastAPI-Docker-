@@ -6,9 +6,13 @@ A fully-featured microservice for audio transcription and speaker diarization us
 
 - **🎤 Audio Transcription**: OpenAI Whisper for high-quality speech-to-text
 - **👥 Speaker Diarization**: pyannote.audio for speaker identification
-- **🔗 Webhook Support**: Optional callback notifications
-- **🔐 Basic Authentication**: Secure API access
-- **🌐 Web UI**: Beautiful upload interface
+- **🔗 Webhook Support**: Optional callback notifications with delivery tracking
+- **🔐 OAuth Authentication**: Google and GitHub OAuth support
+- **🔐 Session Management**: Secure session-based authentication
+- **🧑‍💼 Admin Dashboard**: Comprehensive job management interface
+- **📊 Database Storage**: SQLite/PostgreSQL job tracking and metadata
+- **📁 File Storage**: Organized user-specific file storage
+- **🌐 Web UI**: Beautiful upload interface with user management
 - **🐳 Docker Ready**: Containerized deployment
 - **📊 Processing Timeline**: Detailed step-by-step tracking
 
@@ -50,14 +54,20 @@ A fully-featured microservice for audio transcription and speaker diarization us
 
 ## 🔧 Setup Requirements
 
-### HuggingFace Token
+### Environment Variables
 
-For speaker diarization to work, you need a HuggingFace token:
+#### Required:
+- **HF_TOKEN**: HuggingFace token for pyannote.audio diarization
+  - Go to [HuggingFace](https://huggingface.co/pyannote/speaker-diarization)
+  - Accept the model terms
+  - Create a token at [https://huggingface.co/settings/tokens](https://huggingface.co/settings/tokens)
+  - Set: `export HF_TOKEN="your_token"`
 
-1. Go to [HuggingFace](https://huggingface.co/pyannote/speaker-diarization)
-2. Accept the model terms
-3. Create a token at [https://huggingface.co/settings/tokens](https://huggingface.co/settings/tokens)
-4. Set the token as environment variable: `export HF_TOKEN="your_token"`
+#### Optional (for OAuth):
+- **GOOGLE_CLIENT_ID** & **GOOGLE_CLIENT_SECRET**: Google OAuth credentials
+- **GITHUB_CLIENT_ID** & **GITHUB_CLIENT_SECRET**: GitHub OAuth credentials
+- **SECRET_KEY**: Session secret key (auto-generated if not set)
+- **DATABASE_URL**: Database connection string (defaults to SQLite)
 
 ### System Requirements
 
@@ -128,7 +138,31 @@ Authorization: Basic <base64_encoded_credentials>
 
 ### GET `/`
 
-Web interface for file upload and processing.
+Web interface for file upload and processing (requires authentication).
+
+### GET `/login`
+
+Login page with OAuth and username/password options.
+
+### GET `/admin`
+
+Admin dashboard (requires admin privileges).
+
+### GET `/admin/jobs`
+
+Get jobs with filtering and pagination (admin only).
+
+### GET `/admin/stats`
+
+Get admin statistics (admin only).
+
+### GET `/admin/download/{job_id}/{file_type}`
+
+Download job files (admin only).
+
+### DELETE `/admin/jobs/{job_id}`
+
+Delete a job and its files (admin only).
 
 ### GET `/health`
 
@@ -147,24 +181,40 @@ Health check endpoint.
 
 ## 🔐 Authentication
 
-Default credentials:
-- **Username**: `admin`
+### Test Credentials:
+- **Email**: `admin@example.com`
 - **Password**: `password123`
 
-To change credentials, modify the `VALID_USERNAME` and `VALID_PASSWORD` variables in `app.py`.
+### OAuth Support:
+- **Google OAuth**: Configure with Google Cloud Console
+- **GitHub OAuth**: Configure with GitHub Developer Settings
+
+### Session Management:
+- Secure session cookies with configurable expiration
+- Automatic session cleanup
+- CSRF protection enabled
 
 ## 📁 Project Structure
 
 ```
 whisper_pyannote_api_ui/
 ├── app.py                 # Main FastAPI application
-├── requirements.txt       # Python dependencies
-├── Dockerfile            # Docker configuration
+├── auth.py               # Authentication and OAuth logic
+├── models.py             # SQLAlchemy database models
+├── database.py           # Database utilities and queries
+├── requirements.txt      # Python dependencies
+├── Dockerfile           # Docker configuration
+├── docker-compose.yml   # Docker Compose setup
+├── setup.sh             # Automated setup script
 ├── create_sample_audio.py # Script to generate test audio
-├── sample.wav            # Sample audio file (generated)
+├── test_api.py          # API testing script
+├── sample.wav           # Sample audio file (generated)
 ├── templates/
-│   └── index.html        # Web interface
-└── README.md            # This file
+│   ├── index.html       # Main upload interface
+│   ├── login.html       # Login page with OAuth
+│   └── admin.html       # Admin dashboard
+├── output/              # User file storage (created automatically)
+└── README.md           # This file
 ```
 
 ## 🧪 Testing

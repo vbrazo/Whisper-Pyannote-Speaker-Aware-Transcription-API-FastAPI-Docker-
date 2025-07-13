@@ -5,6 +5,12 @@ FROM python:3.10-slim
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV HF_TOKEN=""
+ENV SECRET_KEY="your-secret-key-change-in-production"
+ENV DATABASE_URL="sqlite:///./whisper_api.db"
+ENV GOOGLE_CLIENT_ID=""
+ENV GOOGLE_CLIENT_SECRET=""
+ENV GITHUB_CLIENT_ID=""
+ENV GITHUB_CLIENT_SECRET=""
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
