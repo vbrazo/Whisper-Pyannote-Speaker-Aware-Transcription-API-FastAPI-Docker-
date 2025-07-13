@@ -49,7 +49,12 @@ A fully-featured microservice for audio transcription and speaker diarization us
 
 3. **Run the application:**
    ```bash
-   python app.py
+   python run.py
+   ```
+   
+   Or using uvicorn directly:
+   ```bash
+   uvicorn app.main:app --reload
    ```
 
 ## 🔧 Setup Requirements
@@ -198,26 +203,46 @@ Health check endpoint.
 
 ```
 whisper_pyannote_api_ui/
-├── app.py                     # Main FastAPI application
-├── auth.py                    # Authentication and OAuth logic
-├── models.py                  # SQLAlchemy database models
-├── database.py                # Database utilities and queries
-├── requirements.txt           # Python dependencies
-├── Dockerfile                 # Docker configuration
-├── docker-compose.yml         # Docker Compose setup
-├── setup.sh                   # Automated setup script
-├── create_sample_audio.py     # Script to generate test audio
-├── test_api.py                # API testing script
-├── sample.wav                 # Sample audio file (generated)
-├── templates/
-│   ├── index.html             # Main upload interface
-│   ├── login.html             # Login page with OAuth
-│   └── admin.html             # Admin dashboard
-|── tests/
-│   ├── test_api.py            # Main upload interface
-│   └── test_auth_api.py       # Admin dashboard
-├── output/                    # User file storage (created automatically)
-└── README.md                  # This file
+├── app/
+│   ├── __init__.py
+│   ├── main.py                # Entry point (was app.py)
+│   ├── api/                   # API routes
+│   │   ├── __init__.py
+│   │   ├── process.py         # /process route
+│   │   ├── admin.py           # /admin route
+│   │   └── auth.py            # Login/OAuth routes
+│   ├── core/                  # Core app config
+│   │   ├── __init__.py
+│   │   ├── config.py          # Settings, secrets
+│   │   └── security.py        # Auth logic, token/session
+│   ├── db/                    # Database layer
+│   │   ├── __init__.py
+│   │   ├── models.py
+│   │   ├── schemas.py
+│   │   └── database.py
+│   ├── services/              # Whisper / Pyannote logic
+│   │   ├── __init__.py
+│   │   ├── whisper.py
+│   │   ├── diarize.py
+│   │   └── merge.py
+│   ├── templates/
+│   │   ├── index.html
+│   │   ├── login.html
+│   │   └── admin.html
+│   └── static/                # Optional: CSS/JS
+│
+├── output/                    # Processed transcripts & audio
+├── tests/
+│   ├── test_api.py
+│   └── test_auth_api.py
+├── sample.wav
+├── create_sample_audio.py
+├── requirements.txt
+├── Dockerfile
+├── docker-compose.yml
+├── setup.sh
+├── run.py                     # Local development entry point
+├── README.md
 ```
 
 ## 🧪 Testing
@@ -238,6 +263,13 @@ curl -X POST "http://localhost:8000/process" \
   -H "Authorization: Basic YWRtaW46cGFzc3dvcmQxMjM=" \
   -F "file=@sample.wav" \
   -F "language=en"
+```
+
+### Test with Python
+
+```bash
+# Run the test script
+python test_api.py
 ```
 
 ### Test Webhook

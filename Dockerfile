@@ -29,7 +29,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Ensure these directories exist
-RUN mkdir -p templates static output
+RUN mkdir -p app/templates app/static output
 
 # Health check endpoint
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
@@ -37,5 +37,5 @@ HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
 
 EXPOSE 8000
 
-# Run using uvicorn
-CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
+# Run using uvicorn with the new app structure
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
