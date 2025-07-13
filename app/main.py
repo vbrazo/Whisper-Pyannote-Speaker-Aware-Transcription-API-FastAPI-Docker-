@@ -1,6 +1,6 @@
 import os
 from fastapi import FastAPI, Request, Depends
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette.middleware.sessions import SessionMiddleware
@@ -13,7 +13,7 @@ from app.services.whisper import load_whisper_model
 from app.services.diarize import load_diarization_pipeline
 from app.api import process, admin, auth
 
-app = FastAPI(title="Whisper + Pyannote Audio Processing API", version="2.0.0")
+app = FastAPI(title="Faster Whisper + Pyannote Audio Processing API", version="2.0.0")
 
 app.add_middleware(
     SessionMiddleware,
@@ -44,7 +44,10 @@ async def startup_event():
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request, current_user = Depends(get_current_user_from_session)):
     """Main upload interface"""
-    return templates.TemplateResponse("index.html", {"request": request})
+    # If no user is authenticated, redirect to login
+    if not current_user:
+        return RedirectResponse(url="/login", status_code=302)
+    return templates.TemplateResponse("index.html", {"request": request, "current_user": current_user})
 
 @app.get("/health")
 async def health_check():
@@ -58,7 +61,7 @@ async def health_check():
     return {
         "status": "healthy",
         "models_loaded": {
-            "whisper": whisper_loaded,
+            "faster_whisper": whisper_loaded,
             "pyannote": pyannote_loaded
         }
     }

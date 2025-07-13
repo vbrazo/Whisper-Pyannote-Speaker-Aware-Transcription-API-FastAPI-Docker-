@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Test script for the Whisper + Pyannote API.
+Test script for the Faster Whisper + Pyannote API.
 This script tests the API endpoints and demonstrates usage.
 """
 
@@ -65,7 +65,7 @@ def test_audio_processing():
     
     try:
         # Prepare the request
-        files = {"file": open(sample_file, "rb")}
+        files = {"file": ("sample.wav", open(sample_file, "rb"), "audio/wav")}
         data = {
             "language": "en",
             "webhook_url": ""  # No webhook for testing

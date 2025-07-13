@@ -212,6 +212,8 @@ async def process_audio(
                 os.unlink(temp_file.name)
                 
     except Exception as e:
-        error_message = str(e)
+        import traceback
+        error_message = f"{str(e)}\n{traceback.format_exc()}"
+        print(f"❌ Exception during processing: {error_message}")
         update_job_status(db, job.id, "failed", error_message)
-        raise HTTPException(status_code=500, detail=f"Processing failed: {error_message}") 
+        raise HTTPException(status_code=500, detail=f"Processing failed: {error_message}")

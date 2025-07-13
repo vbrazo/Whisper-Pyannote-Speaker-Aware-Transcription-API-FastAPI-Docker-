@@ -1,10 +1,10 @@
 # 🎤 Whisper + Pyannote Audio Processing API
 
-A fully-featured microservice for audio transcription and speaker diarization using OpenAI Whisper and pyannote.audio.
+A fully-featured microservice for audio transcription and speaker diarization using Faster Whisper and pyannote.audio.
 
 ## ✨ Features
 
-- **🎤 Audio Transcription**: OpenAI Whisper for high-quality speech-to-text
+- **🎤 Audio Transcription**: ⚡ Powered by Faster-Whisper — a faster, memory-efficient Whisper implementation optimized for production workloads
 - **👥 Speaker Diarization**: pyannote.audio for speaker identification
 - **🔗 Webhook Support**: Optional callback notifications with delivery tracking
 - **🔐 OAuth Authentication**: Google and GitHub OAuth support

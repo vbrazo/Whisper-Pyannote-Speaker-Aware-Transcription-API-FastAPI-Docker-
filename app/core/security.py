@@ -5,7 +5,7 @@ from typing import Optional, Union
 from urllib.parse import urlencode
 
 from fastapi import Depends, HTTPException, status, Request, Response
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials, HTTPBasic, HTTPBasicCredentials
 from sqlalchemy.orm import Session
 from passlib.context import CryptContext
 from authlib.integrations.starlette_client import OAuth
@@ -51,6 +51,9 @@ if settings.GITHUB_CLIENT_ID and settings.GITHUB_CLIENT_SECRET:
 
 # Token bearer for API access
 bearer = HTTPBearer()
+
+# Basic auth for API access
+basic = HTTPBasic()
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
@@ -178,14 +181,35 @@ def get_current_user_from_token(
     return user
 
 
+# Dependency to get current user from session or Basic Auth
+def get_current_user_flexible(
+    request: Request,
+    credentials: Optional[HTTPBasicCredentials] = Depends(basic),
+    db: Session = Depends(get_db)
+) -> Optional[User]:
+    """Get current user from session or Basic Auth"""
+    # Try session first
+    user = get_current_user_from_session(request, db)
+    if user:
+        return user
+    
+    # Try Basic Auth if provided
+    if credentials:
+        user = authenticate_user(db, credentials.username, credentials.password)
+        if user:
+            return user
+    
+    return None
+
+
 # Dependency to require authentication
-def require_auth(current_user: Optional[User] = Depends(get_current_user_from_session)) -> User:
-    """Require authentication - redirect to login if not authenticated"""
+def require_auth(current_user: Optional[User] = Depends(get_current_user_flexible)) -> User:
+    """Require authentication - supports both session and Basic Auth"""
     if not current_user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Not authenticated",
-            headers={"WWW-Authenticate": "Bearer"},
+            headers={"WWW-Authenticate": "Basic"},
         )
     return current_user
 
