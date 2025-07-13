@@ -3,6 +3,7 @@ from fastapi import HTTPException
 from typing import Dict, Any
 
 from app.core.config import settings
+import torch
 
 # Global whisper model
 whisper_model = None
@@ -10,8 +11,9 @@ whisper_model = None
 def load_whisper_model():
     """Load Whisper model"""
     global whisper_model
-    print("Loading Whisper model...")
-    whisper_model = whisper.load_model(settings.WHISPER_MODEL)
+    device = "cuda" if settings.is_gpu and torch.cuda.is_available() else "cpu"
+    print(f"Loading Whisper model on device: {device}")
+    whisper_model = whisper.load_model(settings.WHISPER_MODEL, device=device)
     print(f"✅ Whisper model '{settings.WHISPER_MODEL}' loaded")
 
 def get_whisper_model():

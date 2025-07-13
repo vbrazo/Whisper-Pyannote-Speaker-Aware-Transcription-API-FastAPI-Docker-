@@ -1,4 +1,23 @@
-from pyannote.audio import Pipeline
+try:
+    from pyannote.audio import Pipeline
+    PYANNOTE_AVAILABLE = True
+except ImportError:
+    print("Warning: pyannote.audio not available. Creating mock.")
+    PYANNOTE_AVAILABLE = False
+    
+    class MockPipeline:
+        def __init__(self, *args, **kwargs):
+            pass
+        
+        def __call__(self, audio_path):
+            return MockDiarization()
+    
+    class MockDiarization:
+        def itertracks(self, yield_label=True):
+            return []
+    
+    Pipeline = MockPipeline
+
 from fastapi import HTTPException
 from typing import Dict, Any
 
@@ -11,6 +30,12 @@ def load_diarization_pipeline():
     """Load Pyannote diarization pipeline"""
     global diarization_pipeline
     print("Loading Pyannote diarization pipeline...")
+    
+    if not PYANNOTE_AVAILABLE:
+        print("Warning: pyannote.audio not available. Using mock.")
+        diarization_pipeline = Pipeline()
+        return
+    
     hf_token = settings.HF_TOKEN
     if not hf_token:
         print("Warning: HF_TOKEN not set. Diarization will not work.")

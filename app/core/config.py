@@ -44,6 +44,9 @@ class Settings(BaseSettings):
     WEBHOOK_TIMEOUT: float = 30.0
     WEBHOOK_MAX_RETRIES: int = 3
     
+    # Runtime Configuration
+    RUN_MODE: str = "cpu"  # cpu or gpu
+    
     class Config:
         env_file = ".env"
         case_sensitive = True
