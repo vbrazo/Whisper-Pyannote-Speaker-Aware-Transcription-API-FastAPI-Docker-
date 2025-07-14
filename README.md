@@ -1,4 +1,4 @@
-# 🎤 Whisper + Pyannote Audio Processing API
+# 🎤 Faker-whisper + Pyannote Audio Processing API
 
 A fully-featured microservice for audio transcription and speaker diarization using Faster Whisper and pyannote.audio.
 
